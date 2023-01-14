@@ -2,6 +2,7 @@ import 'react-native-gesture-handler'
 
 import React from 'react';
 import { useFonts, Inter_400Regular, Inter_500Medium } from '@expo-google-fonts/inter';
+import {AppProvider} from './src/hooks'
 import { Archivo_400Regular, Archivo_500Medium, Archivo_600SemiBold } from '@expo-google-fonts/archivo';
 import AppLoading from 'expo-app-loading';
 import { ThemeProvider } from 'styled-components';
@@ -25,7 +26,9 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <Routes />
+        <AppProvider>
+         <Routes />
+        </AppProvider>
       </GestureHandlerRootView>
     </ThemeProvider>
   )

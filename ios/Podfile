@@ -17,7 +17,6 @@ target 'rentX' do
 
   # Flags change depending on the env values.
   flags = get_default_flags()
-
   use_react_native!(
     :path => config[:reactNativePath],
     :hermes_enabled => podfile_properties['expo.jsEngine'] == 'hermes',
@@ -29,6 +28,21 @@ target 'rentX' do
     # Note that if you have use_frameworks! enabled, Flipper will not work
     # :flipper_configuration => !ENV['CI'] ? FlipperConfiguration.enabled : FlipperConfiguration.disabled,
   )
+    # NOTE: Do not remove, needed to keep WatermelonDB compiling:
+    pod 'React-jsi', :path => '../node_modules/react-native/ReactCommon/jsi', :modular_headers => true
+
+    pre_install do |installer|
+      Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
+      installer.pod_targets.each do |pod|
+        staticPods = ['simdjson']
+        if staticPods.include?(pod.name) then
+          puts "Fixing " + pod.name + " build type..."
+          def pod.build_type;
+            Pod::BuildType.static_library
+          end
+        end
+      end
+    end
 
   post_install do |installer|
     react_native_post_install(
@@ -48,6 +62,7 @@ target 'rentX' do
           config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
         end
       end
+      
     end
   end
 
