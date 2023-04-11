@@ -1,11 +1,10 @@
+import { createStackNavigator } from '@react-navigation/stack';
 import React from "react";
-import { createStackNavigator } from '@react-navigation/stack'
-import { Home } from '../screens/Home'
-import { CarDetails } from '../screens/CarDetails'
-import { Scheduling } from '../screens/Scheduling'
-import { SchedulingDetails } from '../screens/SchedulingDetails'
-import { Confirmation } from '../screens/Confirmation'
-import { MyCars } from '../screens/MyCars'
+import { CarDetails } from '../screens/CarDetails';
+import { Confirmation } from '../screens/Confirmation';
+import { Home } from '../screens/Home';
+import { Scheduling } from '../screens/Scheduling';
+import { SchedulingDetails } from '../screens/SchedulingDetails';
 
 const { Navigator, Screen } = createStackNavigator()
 
@@ -35,10 +34,6 @@ export function AppStackRoutes() {
       <Screen
         name="Confirmation"
         component={Confirmation}
-      />
-      <Screen
-        name="MyCars"
-        component={MyCars}
       />
     </Navigator>
   )

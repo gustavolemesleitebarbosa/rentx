@@ -1,19 +1,19 @@
 import React from 'react';
 import { useWindowDimensions } from 'react-native';
 
-import LogoSvg from '../../assets/logo_background_gray.svg'
-import DoneSvg from '../../assets/done.svg'
+import DoneSvg from '../../assets/done.svg';
+import LogoSvg from '../../assets/logo_background_gray.svg';
 
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { StatusBar } from 'react-native';
+import { ConfirmButton } from '../../components/ConfirmButton';
 import {
   Container,
   Content,
-  Title,
+  Footer,
   Message,
-  Footer
+  Title
 } from './styles';
-import { ConfirmButton } from '../../components/ConfirmButton';
-import { StatusBar } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
 
 
 interface Params {
@@ -29,7 +29,7 @@ export function Confirmation() {
   const { title, message, nextScreenRoute } = route.params as Params;
 
   function handleConfirmRental() {
-    navigation.navigate(nextScreenRoute as never)
+    navigation.navigate(nextScreenRoute);
   }
 
   return (

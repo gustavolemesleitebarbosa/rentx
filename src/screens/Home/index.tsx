@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { StatusBar, StyleSheet, BackHandler } from 'react-native'
+import { StatusBar, StyleSheet, BackHandler, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { CarList, Container, Header, HeaderContent, TotalCars } from './styles';
 import { RFValue } from 'react-native-responsive-fontsize'
+import { synchronize } from '@nozbe/watermelondb/sync'
+import { database } from '../../database'
 import { CarDTO } from '../../dtos/CarDto';
 import { Ionicons } from '@expo/vector-icons'
+import { useNetInfo } from '@react-native-community/netinfo';
 import Animated, { useSharedValue, useAnimatedStyle, useAnimatedGestureHandler, event, withSpring } from 'react-native-reanimated';
 
 import { RectButton, PanGestureHandler } from 'react-native-gesture-handler';
@@ -15,11 +18,13 @@ import { api } from '../../services/api'
 
 import Logo from '../../assets/logo.svg'
 import { Car } from '../../components/Car';
+import {Car as ModelCar} from '../../database/models/Car'
 import theme from '../../../styles/theme';
 
 export function Home() {
-  const [cars, setCars] = useState<CarDTO[]>([])
+  const [cars, setCars] = useState<ModelCar[]>([])
   const [loading, setLoading] = useState(true)
+  const netInfo = useNetInfo();
   const navigation = useNavigation()
 
   const positionY = useSharedValue(0);
@@ -53,25 +58,61 @@ export function Home() {
     navigation.navigate('CarDetails', { car })
   }
 
+  async function offlineSynchronize(){
+    await synchronize({
+      database,
+      pullChanges: async ({ lastPulledAt }) => {
+        const response = await api
+        .get(`cars/sync/pull?lastPulledVersion=${lastPulledAt || 0}`);
+        
+        const { changes, latestVersion } = response.data;
+        return { changes, timestamp: latestVersion }
+      },
+      pushChanges: async ({ changes }) => {
+        const user = changes.users;
+        await api.post('/users/sync', user).catch(console.log);
+      },
+    });
+  }
+
+
   function handleOpenMyCars() {
     navigation.navigate('MyCars')
   }
 
   useEffect(() => {
+    let isMounted = true
     async function fetchCars() {
       try {
-        const response = await api.get('/cars')
-        setCars(response.data)
+        // const response = await api.get('/cars')
+        //avoid to set a set a state after the promise is resolved with the component unmounting
+        const carCollection = database.get<ModelCar>('cars')
+        const cars = await carCollection.query().fetch()
+        if (isMounted) {
+          setCars(cars)
+        }
       }
       catch (error) {
-        console.log(error)
+        throw new Error(error as string)
       }
       finally {
-        setLoading(false)
+        if (isMounted) {
+          setLoading(false)
+        }
       }
     }
     fetchCars()
+    return () => {
+      // componet is unmounting end of lifecyle
+      isMounted = false
+    }
   }, [])
+
+  useEffect(() => {
+    if(netInfo.isConnected ===true){
+      offlineSynchronize()
+    }
+  }, [netInfo.isConnected])
 
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', () => {
@@ -90,10 +131,10 @@ export function Home() {
         <HeaderContent>
           <Logo width={RFValue(108)}
             height={RFValue(12)} />
-          { !loading &&
-          <TotalCars>
-            {`Total de ${cars.length} carros`}
-          </TotalCars>
+          {!loading &&
+            <TotalCars>
+              {`Total de ${cars.length} carros`}
+            </TotalCars>
           }
         </HeaderContent>
       </Header>

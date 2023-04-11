@@ -6,6 +6,9 @@ class User extends Model {
   
   @field('user_id')
   user_id!: string 
+
+  @field('email')
+  email!: string 
   
   @field('name')
   name!: string 
@@ -21,4 +24,4 @@ class User extends Model {
 
 }
 
-export {User}
+export { User }

@@ -1,12 +1,11 @@
-import React, { useState} from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React, { useState } from 'react';
+import { Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native';
+import * as Yup from 'yup';
 import { BackButton } from '../../../components/BackButton';
 import { Bullet } from '../../../components/Bullet';
-import { Alert } from 'react-native';
-import { Container, Header, Steps, Title, SubTitle, Form, FormTitle } from './styles';
-import * as Yup from 'yup'
 import { Input } from '../../../components/Input';
+import { Container, Form, FormTitle, Header, Steps, SubTitle, Title } from './styles';
 
 import { Button } from '../../../components/Button';
 import { useAuth } from '../../../hooks/auth';

@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { StatusBar, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { Alert, Keyboard, KeyboardAvoidingView, StatusBar, TouchableWithoutFeedback } from 'react-native';
+import * as Yup from 'yup';
 import theme from '../../../styles/theme';
-import { useNavigation } from '@react-navigation/native'
 import { Button } from '../../components/Button';
-import { Container, Header, Title, SubTitle, Footer, Form } from './styles';
 import { Input } from '../../components/Input';
-import {useAuth} from '../../hooks/auth'
 import { PasswordInput } from '../../components/PasswordInput';
-import {database} from '../../database' 
-import * as Yup from 'yup'
+import { database } from '../../database';
+import { useAuth } from '../../hooks/auth';
+import { Container, Footer, Form, Header, SubTitle, Title } from './styles';
 
 export  function SignIn() {
 const  [email, setEmail] = useState('')
@@ -20,7 +20,6 @@ useEffect(()=>{
  async function loadData(){
   const userCollection = database.get('users')
   const users = await userCollection.query().fetch();
-  console.log(users)
 }
 loadData()
 },[])

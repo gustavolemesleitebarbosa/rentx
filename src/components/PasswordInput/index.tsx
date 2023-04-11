@@ -42,7 +42,7 @@ export function PasswordInput({ iconName,value, ...rest }: Props) {
           color={(isFocused|| isFilled) ? theme.colors.main : theme.colors.text_detail}
         />
       </IconContainer>
-      <InputText  isFocused={isFocused} onBlur={handleInputBlur} onFocus={handleInputFocus} secureTextEntry={isPasswordVisible} {...rest} />
+      <InputText autoCorrect={false}  isFocused={isFocused} onBlur={handleInputBlur} onFocus={handleInputFocus} secureTextEntry={isPasswordVisible} {...rest} />
       <BorderlessButton onPress={handlePasswordVisibilityChange}>
         <IconContainer  isFocused={isFocused}>
           <Feather

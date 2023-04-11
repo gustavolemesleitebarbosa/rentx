@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React, { useState } from 'react';
+import { Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native';
+import { useTheme } from 'styled-components';
 import { BackButton } from '../../../components/BackButton';
 import { Bullet } from '../../../components/Bullet';
-import { useTheme } from 'styled-components'
-import { Alert } from 'react-native';
-import { Container, Header, Steps, Title, SubTitle, Form, FormTitle } from './styles';
-import { api } from '../../../services/api'
+import { api } from '../../../services/api';
+import { Container, Form, FormTitle, Header, Steps, SubTitle, Title } from './styles';
 
 import { Button } from '../../../components/Button';
 import { PasswordInput } from '../../../components/PasswordInput';
@@ -51,8 +50,8 @@ export function SignUpSecondStep() {
           title: 'Conta criada',
           message: `Agora é só fazer login\ne aproveitar`
         })
-      }).catch(() => {
-        Alert.alert('Opa', 'Não foi possível cadastrar')
+      }).catch((error) => {
+        Alert.alert('Opa', error.toString());
       });
   }
 
